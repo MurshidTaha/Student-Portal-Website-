@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar - Student Portal</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="logo">Student Portal</a>
+            <div class="nav-links">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="courses.html">Courses</a>
+                <a href="assignments.html">Assignments</a>
+                <a href="grades.html">Grades</a>
+                <a href="calendar.html" class="active">Calendar</a>
+                <a href="profile.html">Profile</a>
+                <a href="#" onclick="authService.logout()">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="calendar-header">
+            <h1>Academic Calendar</h1>
+            <div class="calendar-controls">
+                <button class="btn btn-secondary" onclick="prevMonth()">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <h2 id="current-month">October 2024</h2>
+                <button class="btn btn-secondary" onclick="nextMonth()">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="calendar-view">
+            <div class="calendar-grid" id="calendar-grid">
+                <!-- Calendar will be generated here -->
+            </div>
+            
+            <div class="calendar-events">
+                <h3>Upcoming Events</h3>
+                <div id="events-list">
+                    <!-- Events will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        let currentDate = new Date();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!authService.isAuthenticated()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            renderCalendar(currentDate);
+            loadEvents();
+        });
+
+        function renderCalendar(date) {
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"];
+            
+            document.getElementById('current-month').textContent = 
+                `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+
+            const calendarGrid = document.getElementById('calendar-grid');
+            calendarGrid.innerHTML = '';
+
+            // Add day headers
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            days.forEach(day => {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-day-header';
+                dayEl.textContent = day;
+                calendarGrid.appendChild(dayEl);
+            });
+
+            // Get first day of month
+            const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+            const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+            const daysInMonth = lastDay.getDate();
+
+            // Empty days before first day
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day empty';
+                calendarGrid.appendChild(emptyDay);
+            }
+
+            // Actual days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-day';
+                dayEl.textContent = day;
+                
+                // Check if today
+                const today = new Date();
+                if (date.getMonth() === today.getMonth() && 
+                    date.getFullYear() === today.getFullYear() && 
+                    day === today.getDate()) {
+                    dayEl.classList.add('today');
+                }
+
+                // Add click event
+                dayEl.addEventListener('click', () => showDayEvents(day));
+                calendarGrid.appendChild(dayEl);
+            }
+        }
+
+        function prevMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar(currentDate);
+            loadEvents();
+        }
+
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar(currentDate);
+            loadEvents();
+        }
+
+        async function loadEvents() {
+            try {
+                const events = await apiService.getCalendarEvents(currentDate.getMonth() + 1, currentDate.getFullYear());
+                renderEvents(events);
+            } catch (error) {
+                console.error('Failed to load events:', error);
+            }
+        }
+
+        function renderEvents(events) {
+            const container = document.getElementById('events-list');
+            
+            if (!events || events.length === 0) {
+                container.innerHTML = '<div class="no-events">No events scheduled</div>';
+                return;
+            }
+
+            container.innerHTML = events.map(event => `
+                <div class="event-item">
+                    <div class="event-date">
+                        <div class="event-day">${new Date(event.date).getDate()}</div>
+                        <div class="event-month">${new Date(event.date).toLocaleDateString('en-US', { month: 'short' })}</div>
+                    </div>
+                    <div class="event-details">
+                        <h5>${event.title}</h5>
+                        <p>${event.description}</p>
+                        <small><i class="fas fa-clock"></i> ${event.time || 'All day'}</small>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showDayEvents(day) {
+            const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+            studentPortal.showToast(`Events for ${date.toLocaleDateString()}`, 'info');
+            // In a real app, show modal with events for that day
+        }
+    </script>
+</body>
+</html>

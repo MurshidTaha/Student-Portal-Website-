@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Courses - Student Portal</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .courses-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .course-filters {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .filter-group {
+            margin-bottom: 1rem;
+        }
+        
+        .filter-group h6 {
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+        
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .filter-option {
+            padding: 0.25rem 0.75rem;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-option:hover,
+        .filter-option.active {
+            background: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+        
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .course-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .course-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .course-code {
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .course-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+        
+        .course-instructor {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .course-body {
+            padding: 1.5rem;
+        }
+        
+        .course-description {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .course-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .course-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        
+        .course-detail i {
+            color: var(--secondary-color);
+        }
+        
+        .course-progress {
+            margin-bottom: 1rem;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+        
+        .course-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .course-actions .btn {
+            flex: 1;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6c757d;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: #dee2e6;
+            margin-bottom: 1rem;
+        }
+        
+        .course-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.25rem 0.75rem;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .course-enrollment {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+        
+        .search-bar {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        
+        .search-bar input {
+            padding-left: 3rem;
+        }
+        
+        .search-bar i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body class="logged-in">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="../index.html">
+                <img src="../images/logo.png" alt="Student Portal" height="50">
+                <span>Student Portal</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="fas fa-tachometer-alt me-1"></i>Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="courses.html"><i class="fas fa-book me-1"></i>Courses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="assignments.html"><i class="fas fa-file-alt me-1"></i>Assignments</a></li>
+                    <li class="nav-item"><a class="nav-link" href="grades.html"><i class="fas fa-chart-line me-1"></i>Grades</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> <span class="user-name">Student</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="authService.logout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container-fluid mt-5 pt-4">
+        <!-- Courses Header -->
+        <div class="courses-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="display-5 fw-bold">My Courses</h1>
+                        <p class="lead">Explore and manage all your enrolled courses in one place</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <a href="course-catalog.html" class="btn btn-outline-light">
+                            <i class="fas fa-plus me-2"></i>Browse All Courses
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Search and Filters -->
+            <div class="row">
+                <div class="col-lg-3">
+                    <!-- Filters Sidebar -->
+                    <div class="course-filters">
+                        <h5 class="mb-3">Filter Courses</h5>
+                        
+                        <div class="filter-group">
+                            <h6>Department</h6>
+                            <div class="filter-options">
+                                <span class="filter-option active" data-filter="department" value="all">All</span>
+                                <span class="filter-option" data-filter="department" value="cs">Computer Science</span>
+                                <span class="filter-option" data-filter="department" value="se">Software Engineering</span>
+                                <span class="filter-option" data-filter="department" value="it">Information Technology</span>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <h6>Semester</h6>
+                            <div class="filter-options">
+                                <span class="filter-option active" data-filter="semester" value="all">All</span>
+                                <span class="filter-option" data-filter="semester" value="1">Semester 1</span>
+                                <span class="filter-option" data-filter="semester" value="2">Semester 2</span>
+                                <span class="filter-option" data-filter="semester" value="3">Semester 3</span>
+                                <span class="filter-option" data-filter="semester" value="4">Semester 4</span>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <h6>Level</h6>
+                            <div class="filter-options">
+                                <span class="filter-option active" data-filter="level" value="all">All</span>
+                                <span class="filter-option" data-filter="level" value="100">100 Level</span>
+                                <span class="filter-option" data-filter="level" value="200">200 Level</span>
+                                <span class="filter-option" data-filter="level" value="300">300 Level</span>
+                                <span class="filter-option" data-filter="level" value="400">400 Level</span>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <h6>Status</h6>
+                            <div class="filter-options">
+                                <span class="filter-option active" data-filter="status" value="all">All</span>
+                                <span class="filter-option" data-filter="status" value="active">Active</span>
+                                <span class="filter-option" data-filter="status" value="completed">Completed</span>
+                                <span class="filter-option" data-filter="status" value="upcoming">Upcoming</span>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-outline-primary w-100 mt-3" id="reset-filters">
+                            <i class="fas fa-redo me-2"></i>Reset Filters
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="col-lg-9">
+                    <!-- Search Bar -->
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="form-control form-control-lg" 
+                               placeholder="Search courses by name, code, or instructor..." 
+                               id="course-search">
+                    </div>
+                    
+                    <!-- Courses Grid -->
+                    <div id="courses-container">
+                        <!-- Courses will be loaded here dynamically -->
+                        <div class="course-grid" id="course-grid">
+                            <!-- Course cards will be inserted here by JavaScript -->
+                        </div>
+                        
+                        <!-- Loading State -->
+                        <div id="loading-state" class="text-center py-5" style="display: none;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-3">Loading courses...</p>
+                        </div>
+                        
+                        <!-- Empty State -->
+                        <div id="empty-state" class="empty-state" style="display: none;">
+                            <i class="fas fa-book-open"></i>
+                            <h3>No Courses Found</h3>
+                            <p class="mb-4">Try adjusting your filters or search terms</p>
+                            <a href="course-catalog.html" class="btn btn-primary">
+                                <i class="fas fa-search me-2"></i>Browse Course Catalog
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <nav aria-label="Course pagination" id="pagination-container" class="d-none">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h4>Student Portal</h4>
+                    <p>Your academic companion for success.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="courses.html">Courses</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="library.html">Library</a></li>
+                        <li><a href="timetable.html">Timetable</a></li>
+                        <li><a href="announcements.html">Announcements</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <h5>Need Help?</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-envelope me-2"></i> support@studentportal.edu</li>
+                        <li><i class="fas fa-phone me-2"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-clock me-2"></i> Mon-Fri: 9AM-5PM</li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p>&copy; 2024 Student Portal. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        // Courses page specific JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load courses
+            loadCourses();
+            
+            // Setup filter event listeners
+            setupFilterListeners();
+            
+            // Setup search functionality
+            setupSearch();
+            
+            // Setup pagination
+            setupPagination();
+        });
+        
+        // Sample course data (in a real app, this would come from API)
+        const sampleCourses = [
+            {
+                id: 1,
+                code: 'CSE-101',
+                title: 'Introduction to Programming',
+                instructor: 'Dr. Sarah Johnson',
+                department: 'Computer Science',
+                semester: 1,
+                level: '100',
+                credits: 3,
+                description: 'Fundamental concepts of programming using Python.',
+                progress: 85,
+                status: 'active',
+                enrolled: true,
+                schedule: 'Mon, Wed 10:00-11:30',
+                room: 'Room 301'
+            },
+            {
+                id: 2,
+                code: 'CSE-201',
+                title: 'Data Structures',
+                instructor: 'Prof. Michael Chen',
+                department: 'Computer Science',
+                semester: 2,
+                level: '200',
+                credits: 4,
+                description: 'Study of fundamental data structures and algorithms.',
+                progress: 92,
+                status: 'active',
+                enrolled: true,
+                schedule: 'Tue, Thu 2:00-3:30',
+                room: 'Room 205'
+            },
+            {
+                id: 3,
+                code: 'CSE-301',
+                title: 'Database Systems',
+                instructor: 'Dr. Emily Rodriguez',
+                department: 'Computer Science',
+                semester: 3,
+                level: '300',
+                credits: 3,
+                description: 'Principles of database design and SQL programming.',
+                progress: 65,
+                status: 'active',
+                enrolled: true,
+                schedule: 'Mon, Wed, Fri 1:00-2:00',
+                room: 'Room 410'
+            },
+            {
+                id: 4,
+                code: 'CSE-401',
+                title: 'Web Development',
+                instructor: 'Prof. David Wilson',
+                department: 'Computer Science',
+                semester: 4,
+                level: '400',
+                credits: 4,
+                description: 'Full-stack web development with modern frameworks.',
+                progress: 78,
+                status: 'active',
+                enrolled: true,
+                schedule: 'Tue, Thu 9:00-10:30',
+                room: 'Lab 3'
+            },
+            {
+                id: 5,
+                code: 'SE-302',
+                title: 'Software Engineering',
+                instructor: 'Dr. Robert Kim',
+                department: 'Software Engineering',
+                semester: 3,
+                level: '300',
+                credits: 3,
+                description: 'Software development lifecycle and project management.',
+                progress: 45,
+                status: 'active',
+                enrolled: true,
+                schedule: 'Mon, Wed 3:00-4:30',
+                room: 'Room 315'
+            },
+            {
+                id: 6,
+                code: 'IT-201',
+                title: 'Networking Fundamentals',
+                instructor: 'Prof. Lisa Anderson',
+                department: 'Information Technology',
+                semester: 2,
+                level: '200',
+                credits: 3,
+                description: 'Introduction to computer networks and protocols.',
+                progress: 0,
+                status: 'upcoming',
+                enrolled: false,
+                schedule: 'Tue, Thu 11:00-12:30',
+                room: 'Room 210'
+            }
+        ];
+        
+        let currentCourses = [...sampleCourses];
+        let currentFilters = {
+            department: 'all',
+            semester: 'all',
+            level: 'all',
+            status: 'all',
+            search: ''
+        };
+        
+        async function loadCourses() {
+            showLoadingState();
+            
+            try {
+                // In a real app, this would be an API call
+                // const response = await apiService.getCourses();
+                // currentCourses = response.courses;
+                
+                // Simulate API delay
+                setTimeout(() => {
+                    renderCourses(currentCourses);
+                    hideLoadingState();
+                }, 500);
+                
+            } catch (error) {
+                console.error('Failed to load courses:', error);
+                hideLoadingState();
+                showEmptyState();
+            }
+        }
+        
+        function renderCourses(courses) {
+            const courseGrid = document.getElementById('course-grid');
+            
+            if (courses.length === 0) {
+                showEmptyState();
+                return;
+            }
+            
+            hideEmptyState();
+            
+            courseGrid.innerHTML = courses.map(course => `
+                <div class="course-card" data-course-id="${course.id}">
+                    ${course.status === 'upcoming' ? 
+                        '<span class="course-badge">Upcoming</span>' : 
+                        course.status === 'completed' ? 
+                        '<span class="course-badge">Completed</span>' : ''}
+                    
+                    ${course.enrolled ? 
+                        '<span class="course-enrollment"><i class="fas fa-user-check me-1"></i>Enrolled</span>' : ''}
+                    
+                    <div class="course-header">
+                        <div class="course-code">${course.code}</div>
+                        <h3 class="course-title">${course.title}</h3>
+                        <div class="course-instructor">
+                            <i class="fas fa-chalkboard-teacher me-1"></i> ${course.instructor}
+                        </div>
+                    </div>
+                    
+                    <div class="course-body">
+                        <p class="course-description">${course.description}</p>
+                        
+                        <div class="course-details">
+                            <div class="course-detail">
+                                <i class="fas fa-building"></i>
+                                <span>${course.department}</span>
+                            </div>
+                            <div class="course-detail">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>Semester ${course.semester}</span>
+                            </div>
+                            <div class="course-detail">
+                                <i class="fas fa-credit-card"></i>
+                                <span>${course.credits} Credits</span>
+                            </div>
+                            <div class="course-detail">
+                                <i class="fas fa-clock"></i>
+                                <span>${course.schedule}</span>
+                            </div>
+                        </div>
+                        
+                        ${course.enrolled && course.status === 'active' ? `
+                            <div class="course-progress">
+                                <div class="progress-info">
+                                    <span>Progress</span>
+                                    <span>${course.progress}%</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar" role="progressbar" 
+                                         style="width: ${course.progress}%" 
+                                         aria-valuenow="${course.progress}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="course-actions">
+                            ${course.enrolled ? `
+                                <a href="course-detail.html?id=${course.id}" class="btn btn-primary">
+                                    <i class="fas fa-door-open me-1"></i> Enter Course
+                                </a>
+                                <button class="btn btn-outline-secondary" onclick="viewCourseMaterials(${course.id})">
+                                    <i class="fas fa-folder-open me-1"></i> Materials
+                                </button>
+                            ` : `
+                                <button class="btn btn-primary" onclick="enrollInCourse(${course.id})">
+                                    <i class="fas fa-user-plus me-1"></i> Enroll
+                                </button>
+                                <a href="course-preview.html?id=${course.id}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-eye me-1"></i> Preview
+                                </a>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Add click event to course cards
+            document.querySelectorAll('.course-card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Don't trigger if clicking on buttons or links
+                    if (!e.target.closest('button') && !e.target.closest('a')) {
+                        const courseId = this.dataset.courseId;
+                        window.location.href = `course-detail.html?id=${courseId}`;
+                    }
+                });
+            });
+        }
+        
+        function setupFilterListeners() {
+            // Filter option clicks
+            document.querySelectorAll('.filter-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const filterType = this.dataset.filter;
+                    const filterValue = this.getAttribute('value');
+                    
+                    // Update active state
+                    document.querySelectorAll(`[data-filter="${filterType}"]`).forEach(opt => {
+                        opt.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Update filters
+                    currentFilters[filterType] = filterValue;
+                    
+                    // Apply filters
+                    applyFilters();
+                });
+            });
+            
+            // Reset filters button
+            document.getElementById('reset-filters').addEventListener('click', function() {
+                resetFilters();
+            });
+        }
+        
+        function setupSearch() {
+            const searchInput = document.getElementById('course-search');
+            let searchTimeout;
+            
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    currentFilters.search = this.value.trim().toLowerCase();
+                    applyFilters();
+                }, 300);
+            });
+            
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    currentFilters.search = this.value.trim().toLowerCase();
+                    applyFilters();
+                }
+            });
+        }
+        
+        function applyFilters() {
+            let filteredCourses = [...sampleCourses];
+            
+            // Apply department filter
+            if (currentFilters.department !== 'all') {
+                filteredCourses = filteredCourses.filter(course => 
+                    course.department.toLowerCase().includes(currentFilters.department)
+                );
+            }
+            
+            // Apply semester filter
+            if (currentFilters.semester !== 'all') {
+                filteredCourses = filteredCourses.filter(course => 
+                    course.semester.toString() === currentFilters.semester
+                );
+            }
+            
+            // Apply level filter
+            if (currentFilters.level !== 'all') {
+                filteredCourses = filteredCourses.filter(course => 
+                    course.level === currentFilters.level
+                );
+            }
+            
+            // Apply status filter
+            if (currentFilters.status !== 'all') {
+                filteredCourses = filteredCourses.filter(course => 
+                    course.status === currentFilters.status
+                );
+            }
+            
+            // Apply search filter
+            if (currentFilters.search) {
+                filteredCourses = filteredCourses.filter(course => 
+                    course.title.toLowerCase().includes(currentFilters.search) ||
+                    course.code.toLowerCase().includes(currentFilters.search) ||
+                    course.instructor.toLowerCase().includes(currentFilters.search) ||
+                    course.description.toLowerCase().includes(currentFilters.search)
+                );
+            }
+            
+            // Show filtered results
+            currentCourses = filteredCourses;
+            renderCourses(currentCourses);
+        }
+        
+        function resetFilters() {
+            // Reset filter values
+            currentFilters = {
+                department: 'all',
+                semester: 'all',
+                level: 'all',
+                status: 'all',
+                search: ''
+            };
+            
+            // Reset UI
+            document.querySelectorAll('.filter-option').forEach(option => {
+                option.classList.remove('active');
+                if (option.getAttribute('value') === 'all') {
+                    option.classList.add('active');
+                }
+            });
+            
+            // Reset search
+            document.getElementById('course-search').value = '';
+            
+            // Show all courses
+            currentCourses = [...sampleCourses];
+            renderCourses(currentCourses);
+        }
+        
+        function setupPagination() {
+            // In a real app, this would handle pagination from API
+        }
+        
+        function showLoadingState() {
+            document.getElementById('loading-state').style.display = 'block';
+            document.getElementById('course-grid').innerHTML = '';
+            document.getElementById('empty-state').style.display = 'none';
+        }
+        
+        function hideLoadingState() {
+            document.getElementById('loading-state').style.display = 'none';
+        }
+        
+        function showEmptyState() {
+            document.getElementById('empty-state').style.display = 'block';
+            document.getElementById('course-grid').innerHTML = '';
+        }
+        
+        function hideEmptyState() {
+            document.getElementById('empty-state').style.display = 'none';
+        }
+        
+        // Course actions
+        async function enrollInCourse(courseId) {
+            try {
+                // Show loading
+                studentPortal.showToast('Enrolling in course...', 'info');
+                
+                // In a real app, this would be an API call
+                // await apiService.enrollCourse(courseId);
+                
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Update UI
+                const course = sampleCourses.find(c => c.id === courseId);
+                if (course) {
+                    course.enrolled = true;
+                    course.status = 'active';
+                    applyFilters(); // Re-render with updated data
+                }
+                
+                studentPortal.showToast('Successfully enrolled in course!', 'success');
+                
+            } catch (error) {
+                console.error('Failed to enroll:', error);
+                studentPortal.showToast('Failed to enroll in course. Please try again.', 'error');
+            }
+        }
+        
+        function viewCourseMaterials(courseId) {
+            studentPortal.showToast('Opening course materials...', 'info');
+            window.location.href = `course-materials.html?id=${courseId}`;
+        }
+    </script>
+</body>
+</html>

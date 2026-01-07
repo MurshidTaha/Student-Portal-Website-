@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages - Student Portal</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="logo">Student Portal</a>
+            <div class="nav-links">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="courses.html">Courses</a>
+                <a href="assignments.html">Assignments</a>
+                <a href="grades.html">Grades</a>
+                <a href="messages.html" class="active">Messages</a>
+                <a href="profile.html">Profile</a>
+                <a href="#" onclick="authService.logout()">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="messages-container">
+            <div class="conversations-sidebar">
+                <div class="messages-header">
+                    <h3>Messages</h3>
+                    <button class="btn btn-primary" onclick="startNewMessage()">
+                        <i class="fas fa-plus"></i> New
+                    </button>
+                </div>
+                <div class="conversations-list" id="conversations-list">
+                    <!-- Conversations will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="chat-main">
+                <div class="chat-header" id="chat-header">
+                    <div class="chat-user-info">
+                        <i class="fas fa-user-circle fa-2x"></i>
+                        <div>
+                            <h4>Select a conversation</h4>
+                            <small>Start chatting with your instructors and classmates</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-messages" id="chat-messages">
+                    <div class="empty-chat">
+                        <i class="fas fa-comments fa-3x"></i>
+                        <h3>No Conversation Selected</h3>
+                        <p>Select a conversation from the list to start messaging</p>
+                    </div>
+                </div>
+                
+                <div class="chat-input" style="display: none;" id="chat-input">
+                    <textarea placeholder="Type your message here..." id="message-input"></textarea>
+                    <button class="btn btn-primary" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i> Send
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        let currentConversation = null;
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (!authService.isAuthenticated()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            await loadConversations();
+        });
+
+        async function loadConversations() {
+            try {
+                const conversations = await apiService.getConversations();
+                renderConversations(conversations);
+            } catch (error) {
+                console.error('Failed to load conversations:', error);
+            }
+        }
+
+        function renderConversations(conversations) {
+            const container = document.getElementById('conversations-list');
+            
+            if (!conversations || conversations.length === 0) {
+                container.innerHTML = '<div class="no-conversations">No conversations yet</div>';
+                return;
+            }
+
+            container.innerHTML = conversations.map(conv => `
+                <div class="conversation-item" onclick="openConversation('${conv._id}')">
+                    <div class="conversation-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="conversation-info">
+                        <h5>${conv.participants.find(p => p._id !== authService.user.id)?.username || 'User'}</h5>
+                        <p class="last-message">${conv.lastMessage?.text || 'No messages yet'}</p>
+                        <small class="message-time">${conv.lastMessage ? formatTime(conv.lastMessage.createdAt) : ''}</small>
+                    </div>
+                    ${conv.unreadCount > 0 ? `<span class="unread-badge">${conv.unreadCount}</span>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function openConversation(conversationId) {
+            currentConversation = conversationId;
+            loadMessages(conversationId);
+            updateChatHeader(conversationId);
+            document.getElementById('chat-input').style.display = 'flex';
+        }
+
+        async function loadMessages(conversationId) {
+            try {
+                const messages = await apiService.getMessages(conversationId);
+                renderMessages(messages);
+            } catch (error) {
+                console.error('Failed to load messages:', error);
+            }
+        }
+
+        function renderMessages(messages) {
+            const container = document.getElementById('chat-messages');
+            
+            if (!messages || messages.length === 0) {
+                container.innerHTML = '<div class="empty-chat">No messages in this conversation</div>';
+                return;
+            }
+
+            container.innerHTML = messages.map(msg => `
+                <div class="message ${msg.sender === authService.user.id ? 'sent' : 'received'}">
+                    <div class="message-content">
+                        <p>${msg.text}</p>
+                        <small class="message-time">${formatTime(msg.createdAt)}</small>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Scroll to bottom
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('message-input');
+            const text = input.value.trim();
+            
+            if (!text || !currentConversation) return;
+            
+            try {
+                await apiService.sendMessage(currentConversation, text);
+                input.value = '';
+                loadMessages(currentConversation); // Refresh messages
+            } catch (error) {
+                console.error('Failed to send message:', error);
+            }
+        }
+
+        function startNewMessage() {
+            // Open new message modal
+            studentPortal.showToast('New message feature coming soon', 'info');
+        }
+
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+    </script>
+</body>
+</html>

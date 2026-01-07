@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grades - Student Portal</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="logo">Student Portal</a>
+            <div class="nav-links">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="courses.html">Courses</a>
+                <a href="assignments.html">Assignments</a>
+                <a href="grades.html" class="active">Grades</a>
+                <a href="profile.html">Profile</a>
+                <a href="#" onclick="authService.logout()">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1>My Grades</h1>
+        
+        <div class="grades-summary mb-4">
+            <div class="summary-card">
+                <h3>CGPA</h3>
+                <div class="grade-value" id="cgpa">3.75</div>
+                <small>Out of 4.00</small>
+            </div>
+            <div class="summary-card">
+                <h3>Current GPA</h3>
+                <div class="grade-value" id="current-gpa">3.8</div>
+                <small>This Semester</small>
+            </div>
+            <div class="summary-card">
+                <h3>Total Credits</h3>
+                <div class="grade-value" id="total-credits">48</div>
+                <small>Completed</small>
+            </div>
+        </div>
+
+        <div class="grades-table-container">
+            <table class="grades-table">
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Code</th>
+                        <th>Assignment</th>
+                        <th>Marks</th>
+                        <th>Grade</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="grades-table-body">
+                    <!-- Dynamic content -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="no-grades" style="display: none;">
+            <div class="empty-state">
+                <i class="fas fa-chart-line fa-3x"></i>
+                <h3>No Grades Available</h3>
+                <p>Grades will appear here once assignments are graded.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (!authService.isAuthenticated()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            await loadGrades();
+            loadGradeSummary();
+        });
+
+        async function loadGrades() {
+            try {
+                const grades = await apiService.getGrades();
+                renderGrades(grades);
+            } catch (error) {
+                console.error('Failed to load grades:', error);
+            }
+        }
+
+        function renderGrades(grades) {
+            const tbody = document.getElementById('grades-table-body');
+            const emptyState = document.getElementById('no-grades');
+            
+            if (!grades || grades.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            
+            tbody.innerHTML = grades.map(grade => `
+                <tr>
+                    <td>${grade.course?.title || 'N/A'}</td>
+                    <td>${grade.course?.code || 'N/A'}</td>
+                    <td>${grade.assignment?.title || 'Course Grade'}</td>
+                    <td>${grade.marks || 0}/${grade.totalMarks || 100}</td>
+                    <td><span class="grade-badge ${getGradeClass(grade.grade)}">${grade.grade || 'N/A'}</span></td>
+                    <td>${new Date(grade.createdAt).toLocaleDateString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadGradeSummary() {
+            try {
+                const summary = await apiService.getGradeSummary();
+                if (summary.success) {
+                    document.getElementById('cgpa').textContent = summary.cgpa;
+                    document.getElementById('current-gpa').textContent = summary.currentGpa;
+                    document.getElementById('total-credits').textContent = summary.totalCredits;
+                }
+            } catch (error) {
+                console.error('Failed to load grade summary:', error);
+            }
+        }
+
+        function getGradeClass(grade) {
+            if (!grade) return '';
+            if (grade.includes('A')) return 'grade-a';
+            if (grade.includes('B')) return 'grade-b';
+            if (grade.includes('C')) return 'grade-c';
+            return 'grade-other';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Student Portal</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid white;
+            object-fit: cover;
+            margin-bottom: 1rem;
+        }
+        
+        .profile-edit-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        
+        .profile-tabs {
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 2rem;
+        }
+        
+        .profile-tabs .nav-link {
+            color: #6c757d;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0;
+        }
+        
+        .profile-tabs .nav-link.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            background: transparent;
+        }
+        
+        .profile-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: var(--secondary-color);
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .info-item {
+            margin-bottom: 1rem;
+        }
+        
+        .info-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .info-value {
+            font-size: 1rem;
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+        
+        .skill-item {
+            margin-bottom: 1.5rem;
+        }
+        
+        .skill-name {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .achievement-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .achievement-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-bottom: 1rem;
+        }
+        
+        .badge-collection {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .badge-item {
+            text-align: center;
+            width: 80px;
+        }
+        
+        .badge-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin: 0 auto 0.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .badge-name {
+            font-size: 0.85rem;
+            color: var(--dark-color);
+        }
+        
+        .activity-timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .activity-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #dee2e6;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+        }
+        
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.25rem;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--secondary-color);
+            border: 3px solid white;
+        }
+        
+        .timeline-date {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 0.25rem;
+        }
+        
+        .timeline-content {
+            font-size: 0.95rem;
+            color: var(--dark-color);
+        }
+        
+        .file-upload {
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .file-upload:hover {
+            border-color: var(--secondary-color);
+            background: #f8f9fa;
+        }
+        
+        .file-upload i {
+            font-size: 3rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+        
+        .password-strength {
+            height: 5px;
+            background: #eee;
+            border-radius: 5px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .password-strength-bar {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s;
+        }
+        
+        .strength-weak { background-color: #e74c3c; }
+        .strength-medium { background-color: #f39c12; }
+        .strength-strong { background-color: #27ae60; }
+        
+        @media (max-width: 768px) {
+            .profile-avatar {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .profile-tabs .nav-link {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body class="logged-in">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="../index.html">
+                <img src="../images/logo.png" alt="Student Portal" height="50">
+                <span>Student Portal</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="fas fa-tachometer-alt me-1"></i>Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="courses.html"><i class="fas fa-book me-1"></i>Courses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="assignments.html"><i class="fas fa-file-alt me-1"></i>Assignments</a></li>
+                    <li class="nav-item"><a class="nav-link" href="grades.html"><i class="fas fa-chart-line me-1"></i>Grades</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> <span class="user-name">Student</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item active" href="profile.html"><i class="fas fa-user me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="authService.logout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container-fluid mt-5 pt-4">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="display-5 fw-bold">My Profile</h1>
+                        <p class="lead">Manage your personal information and academic profile</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <button class="btn btn-outline-light" onclick="editProfile()">
+                            <i class="fas fa-edit me-2"></i>Edit Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Profile Overview -->
+            <div class="profile-section">
+                <div class="row">
+                    <div class="col-lg-3 text-center">
+                        <div class="position-relative d-inline-block">
+                            <img src="../images/avatar.jpg" alt="Profile Avatar" class="profile-avatar" id="profile-avatar">
+                            <button class="btn btn-primary btn-sm profile-edit-btn" onclick="changeAvatar()">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                        </div>
+                        <h3 id="profile-name" class="user-name">John Doe</h3>
+                        <p class="text-muted" id="profile-role">Computer Science Student</p>
+                        <div class="mt-3">
+                            <span class="badge bg-primary" id="profile-id">CS2023-001</span>
+                            <span class="badge bg-success">Active</span>
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Email Address</div>
+                                <div class="info-value" id="profile-email">john.doe@student.edu</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Phone Number</div>
+                                <div class="info-value" id="profile-phone">+1 (555) 123-4567</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Date of Birth</div>
+                                <div class="info-value" id="profile-dob">January 15, 2000</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Department</div>
+                                <div class="info-value" id="profile-department">Computer Science</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Semester</div>
+                                <div class="info-value" id="profile-semester">4th Semester</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Enrollment Date</div>
+                                <div class="info-value" id="profile-enrollment">September 2023</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">CGPA</div>
+                                <div class="info-value" id="profile-cgpa">3.75/4.00</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Attendance</div>
+                                <div class="info-value" id="profile-attendance">92%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Tabs -->
+            <ul class="nav nav-tabs profile-tabs" id="profileTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="academic-tab" data-bs-toggle="tab" data-bs-target="#academic" type="button">
+                        <i class="fas fa-graduation-cap me-2"></i>Academic
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="skills-tab" data-bs-toggle="tab" data-bs-target="#skills" type="button">
+                        <i class="fas fa-tools me-2"></i>Skills
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="achievements-tab" data-bs-toggle="tab" data-bs-target="#achievements" type="button">
+                        <i class="fas fa-trophy me-2"></i>Achievements
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="activity-tab" data-bs-toggle="tab" data-bs-target="#activity" type="button">
+                        <i class="fas fa-history me-2"></i>Activity
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button">
+                        <i class="fas fa-cog me-2"></i>Settings
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="profileTabContent">
+                <!-- Academic Tab -->
+                <div class="tab-pane fade show active" id="academic" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="profile-section">
+                                <h3 class="section-title"><i class="fas fa-book-open"></i> Current Courses</h3>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Course Code</th>
+                                                <th>Course Name</th>
+                                                <th>Instructor</th>
+                                                <th>Grade</th>
+                                                <th>Progress</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="current-courses">
+                                            <!-- Courses will be loaded dynamically -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="profile-section">
+                                <h3 class="section-title"><i class="fas fa-chart-line"></i> Academic Performance</h3>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Semester GPA</h5>
+                                                <div class="display-4 text-primary">3.8</div>
+                                                <p class="text-muted">Current Semester</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Overall CGPA</h5>
+                                                <div class="display-4 text-success">3.75</div>
+                                                <p class="text-muted">Cumulative</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-4">
+                            <div class="profile-section">
+                                <h3 class="section-title"><i class="fas fa-calendar-alt"></i> Academic Calendar</h3>
+                                <div class="list-group list-group-flush">
+                                    <div class="list-group-item">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">Midterm Exams</h6>
+                                            <small class="text-danger">Oct 15-20</small>
+                                        </div>
+                                        <p class="small mb-1">All courses</p>
+                                    </div>
+                                    <div class="list-group-item">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">Project Submission</h6>
+                                            <small class="text-warning">Nov 10</small>
+                                        </div>
+                                        <p class="small mb-1">Web Development</p>
+                                    </div>
+                                    <div class="list-group-item">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">Final Exams</h6>
+                                            <small class="text-info">Dec 15-22</small>
+                                        </div>
+                                        <p class="small mb-1">All courses</p>
+                                    </div>
+                                    <div class="list-group-item">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">Semester Break</h6>
+                                            <small class="text-success">Dec 23 - Jan 15</small>
+                                        </div>
+                                        <p class="small mb-1">Winter break</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="profile-section">
+                                <h3 class="section-title"><i class="fas fa-file-alt"></i> Recent Grades</h3>
+                                <div class="list-group list-group-flush">
+                                    <div class="list-group-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                    A
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Data Structures</h6>
+                                                <small class="text-muted">Midterm Exam</small>
+                                            </div>
+                                            <div class="ms-auto">
+                                                <span class="badge bg-success">95%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                    B+
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Database Systems</h6>
+                                                <small class="text-muted">Assignment 3</small>
+                                            </div>
+                                            <div class="ms-auto">
+                                                <span class="badge bg-primary">85%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                <div class="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                    B
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Software Engineering</h6>
+                                                <small class="text-muted">Project Milestone</small>
+                                            </div>
+                                            <div class="ms-auto">
+                                                <span class="badge bg-warning">80%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Skills Tab -->
+                <div class="tab-pane fade" id="skills" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="profile-section">
+                                <h3 class="section-title"><i class="fas fa-code"></i> Technical Skills</h3>
+                                <div class="skill-item">
+                                    <div class="skill-name">
+                                        <span>Python Programming</span>
+                                        <span>90%</span>
+                                    </div>
+                                    <div class="progress" style="height: 10px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: 90%"></div>
+                                    </div>
+                                </div>
+                                <div class="skill-item">
+                                    <div class="skill-name">
+                                        <span>Web Development</span>
+                                        <span>85%</span>
+                                    </div>
+                                    <div class="progress" style="height: 10px;">
+                                        <div class="progress-bar bg-info" role="progressbar" style="width: 85%"></div>
+                                    </div>
+                                </div>
+                                <div class="skill-item">
+                                    <div class="skill-name">
+                                        <span>Database Management</span>
+                                        <span>80%</span>
+                                    </div>
+                                    <div class="progress" style="height: 10px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 80%"></div>
+                                    </div>
+                                </div>
+                                <div class="skill-item">
+                                    <div class="skill-name">
+                                        <span>Data Structures & Algorithms</span>
+                                        <span>75%</span>
+                                    </div>
+                                    <div class="progress" style="height: 10px;">
+                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 75%"></div>
+                                    </div>
+                                </div>
+                                <div class="skill-item">
+                                    <div class="skill-name">
+                                        <span>Mobile App Development</span>
+                                        <span>60%</span>
+                                    </div>
+                                    <div class="progress" style="height: 10px;">
+                                        <div class="progress-bar bg-secondary" role="progressbar" style="width: 60%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="profile-section">
+                                <h3 class="section-title"><i class="fas fa-language"></i> Languages</h3>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="skill-item">
+                                            <div class="skill-name">
+                                                <span>English</span>
+                                                <span>Native</span>
+                                            </div>
+                                            <div class="progress" style="height: 10px;">
+                                                <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="skill-item">
+                                            <div class="skill-name">
+                                                <span>Spanish</span>
+                                                <span>Intermediate</span>
+                                            </div>
+                                            <div class="progress" style="height: 10px;">
+                                                <div class="progress-bar bg-info" role="progressbar" style="width: 60%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-4">
+                            <div class="profile-section">
+                                <h3 class="section-title"><i class="fas fa-certificate"></i> Certifications</h3>
+                                <div class="list-group list-group-flush">
+                                    <div class="list-group-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                <i class="fas fa-award text-warning fa-2x"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Python Developer</h6>
+                                                <small class="text-muted">Coursera • 2023</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                <i class="fas fa-award text-info fa-2x"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Web Development</h6>
+                                                <small class="text-muted">Udemy • 2023</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                <i class="fas fa-award text-success fa-2x"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">SQL Fundamentals</h6>
+                                                <small class="text-muted">DataCamp • 2022</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="profile-section">
+                                <h3 class="section-title"><i class="fas fa-tools"></i> Tools & Technologies</h3>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-primary">Python</span>
+                                    <span class="badge bg-primary">JavaScript</span>
+                                    <span class="badge bg-primary">React</span>
+                                    <span class="badge bg-primary">Node.js</span>
+                                    <span class="badge bg-success">MySQL</span>
+                                    <span class="badge bg-success">MongoDB</span>
+                                    <span class="badge bg-warning">Git</span>
+                                    <span class="badge bg-warning">Docker</span>
+                                    <span class="badge bg-info">VS Code</span>
+                                    <span class="badge bg-info">Figma</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Achievements Tab -->
+                <div class="tab-pane fade" id="achievements" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="profile-section">
+                                <h3 class="section-title"><i class="fas fa-trophy"></i> Recent Achievements</h3>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="achievement-card">
+                                            <div class="achievement-icon">
+                                                <i class="fas fa-medal"></i>
+                                            </div>
+                                            <h5>Top Performer</h5>
+                                            <p class="text-muted">Ranked #1 in Data Structures course</p>
+                                            <small class="text-primary">October 2023</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="achievement-card">
+                                            <div class="achievement-icon">
+                                                <i class="fas fa-code"></i>
+                                            </div>
+                                            <h5>Hackathon Winner</h5>
+                                            <p class="text-muted">1st place in University Hackathon 2023</p>
+                                            <small class="text-primary">September 2023</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="achievement-card">
+                                            <div class="achievement-icon">
+                                                <i class="fas fa-users"></i>
+                                            </div>
+                                            <h5>Team Leader</h5>
+                                            <p class="text-muted">Led successful group project with 5 members</p>
+                                            <small class="text-primary">August 2023</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="achievement-card">
+                                            <div class="achievement-icon">
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                            <h5>Perfect Attendance</h5>
+                                            <p class="text-muted">100% attendance for 2 consecutive semesters</p>
+                                            <small class="text-primary">July 2023</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-4">
+                            <div class="profile-section">
+                                <h3 class="section-title"><i class="fas fa-shield-alt"></i> Badges</h3>
+                                <div class="badge-collection">
+                                    <div class="badge-item">
+                                        <div class="badge-icon">
+                                            <i class="fas fa-rocket"></i>
+                                        </div>
+                                        <div class="badge-name">Fast Learner</div>
+                                    </div>
+                                    <div class="badge-item">
+                                        <div class="badge-icon">
+                                            <i class="fas fa-lightbulb"></i>
+                                        </div>
+                                        <div class="badge-name">Problem Solver</div>
+                                    </div>
+                                    <div class="badge-item">
+                                        <div class="badge-icon">
+                                            <i class="fas fa-comments"></i>
+                                        </div>
+                                        <div class="badge-name">Active Contributor</div>
+                                    </div>
+                                    <div class="badge-item">
+                                        <div class="badge-icon">
+                                            <i class="fas fa-handshake"></i>
+                                        </div>
+                                        <div class="badge-name">Team Player</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="profile-section">
+                                <h3 class="section-title"><i class="fas fa-chart-bar"></i> Statistics</h3>
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <div class="info-label">Courses Completed</div>
+                                        <div class="info-value display-6">12</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Assignments</div>
+                                        <div class="info-value display-6">45</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Projects</div>
+                                        <div class="info-value display-6">8</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Awards</div>
+                                        <div class="info-value display-6">6</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Activity Tab -->
+                <div class="tab-pane fade" id="activity" role="tabpanel">
+                    <div class="profile-section">
+                        <h3 class="section-title"><i class="fas fa-history"></i> Recent Activity</h3>
+                        <div class="activity-timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-date">Today, 2:30 PM</div>
+                                <div class="timeline-content">
+                                    <strong>Submitted assignment</strong> for Web Development course
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">Yesterday, 4:15 PM</div>
+                                <div class="timeline-content">
+                                    <strong>Participated in discussion</strong> for Database Systems forum
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">Oct 25, 10:00 AM</div>
+                                <div class="timeline-content">
+                                    <strong>Downloaded course materials</strong> for Software Engineering
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">Oct 24, 3:45 PM</div>
+                                <div class="timeline-content">
+                                    <strong>Received grade</strong> 95% on Data Structures midterm
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">Oct 23, 11:30 AM</div>
+                                <div class="timeline-content">
+                                    <strong>Updated profile information</strong> and added new skills
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Settings Tab -->
+                <div class="tab-pane fade" id="settings" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="profile-section">
+                                <h3 class="section-title"><i class="fas fa-user-cog"></i> Profile Settings</h3>
+                                <form id="profile-settings-form">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">First Name</label>
+                                            <input type="text" class="form-control" value="John" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Last Name</label>
+                                            <input type="text" class="form-control" value="Doe" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Email Address</label>
+                                            <input type="email" class="form-control" value="john.doe@student.edu" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Phone Number</label>
+                                            <input type="tel" class="form-control" value="+1 (555) 123-4567">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Date of Birth</label>
+                                            <input type="date" class="form-control" value="2000-01-15">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Department</label>
+                                            <select class="form-select">
+                                                <option>Computer Science</option>
+                                                <option>Software Engineering</option>
+                                                <option>Information Technology</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <label class="form-label">Bio</label>
+                                            <textarea class="form-control" rows="3">Passionate computer science student with interest in web development and data science.</textarea>
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-primary">Update Profile</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <div class="profile-section">
+                                <h3 class="section-title"><i class="fas fa-lock"></i> Change Password</h3>
+                                <form id="password-change-form">
+                                    <div class="mb-3">
+                                        <label class="form-label">Current Password</label>
+                                        <input type="password" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">New Password</label>
+                                        <input type="password" class="form-control" id="new-password" required>
+                                        <div class="password-strength">
+                                            <div class="password-strength-bar" id="password-strength-bar"></div>
+                                        </div>
+                                        <small class="text-muted">Password must be at least 8 characters long</small>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Confirm New Password</label>
+                                        <input type="password" class="form-control" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Change Password</button>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-4">
+                            <div class="profile-section">
+                                <h3 class="section-title"><i class="fas fa-bell"></i> Notifications</h3>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="email-notifications" checked>
+                                    <label class="form-check-label" for="email-notifications">Email Notifications</label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="assignment-notifications" checked>
+                                    <label class="form-check-label" for="assignment-notifications">Assignment Alerts</label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="grade-notifications" checked>
+                                    <label class="form-check-label" for="grade-notifications">Grade Updates</label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="course-notifications">
+                                    <label class="form-check-label" for="course-notifications">Course Announcements</label>
+                                </div>
+                            </div>
+                            
+                            <div class="profile-section">
+                                <h3 class="section-title"><i class="fas fa-palette"></i> Theme</h3>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-dark" onclick="setTheme('light')">
+                                        <i class="fas fa-sun me-2"></i> Light Mode
+                                    </button>
+                                    <button class="btn btn-outline-dark" onclick="setTheme('dark')">
+                                        <i class="fas fa-moon me-2"></i> Dark Mode
+                                    </button>
+                                    <button class="btn btn-outline-dark" onclick="setTheme('auto')">
+                                        <i class="fas fa-adjust me-2"></i> Auto
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="profile-section">
+                                <h3 class="section-title"><i class="fas fa-download"></i> Data Export</h3>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-primary" onclick="exportProfileData()">
+                                        <i class="fas fa-file-export me-2"></i> Export Profile Data
+                                    </button>
+                                    <button class="btn btn-outline-primary" onclick="exportCourseData()">
+                                        <i class="fas fa-download me-2"></i> Export Course History
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h4>Student Portal</h4>
+                    <p>Your academic companion for success.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="courses.html">Courses</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="library.html">Library</a></li>
+                        <li><a href="timetable.html">Timetable</a></li>
+                        <li><a href="announcements.html">Announcements</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <h5>Need Help?</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-envelope me-2"></i> support@studentportal.edu</li>
+                        <li><i class="fas fa-phone me-2"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-clock me-2"></i> Mon-Fri: 9AM-5PM</li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p>&copy; 2024 Student Portal. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        // Profile page specific JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load profile data
+            loadProfileData();
+            
+            // Load current courses
+            loadCurrentCourses();
+            
+            // Setup form submissions
+            setupForms();
+            
+            // Setup password strength meter
+            setupPasswordStrength();
+        });
+        
+        async function loadProfileData() {
+            try {
+                const userData = await apiService.getUserProfile();
+                if (userData.success) {
+                    updateProfileUI(userData.user);
+                }
+            } catch (error) {
+                console.error('Failed to load profile data:', error);
+                // Use sample data as fallback
+                useSampleProfileData();
+            }
+        }
+        
+        function updateProfileUI(user) {
+            // Update basic info
+            document.getElementById('profile-name').textContent = 
+                user.profile?.fullName || user.username;
+            document.getElementById('profile-email').textContent = user.email;
+            
+            // Update role/department
+            const roleElement = document.getElementById('profile-role');
+            const deptElement = document.getElementById('profile-department');
+            
+            if (user.profile?.department) {
+                roleElement.textContent = `${user.profile.department} Student`;
+                deptElement.textContent = user.profile.department;
+            }
+            
+            // Update other profile fields
+            const fields = ['phone', 'dob', 'semester', 'enrollment', 'cgpa', 'attendance', 'id'];
+            fields.forEach(field => {
+                const element = document.getElementById(`profile-${field}`);
+                if (element && user.profile?.[field]) {
+                    element.textContent = user.profile[field];
+                }
+            });
+            
+            // Update user name in navigation
+            document.querySelectorAll('.user-name').forEach(el => {
+                el.textContent = user.profile?.fullName || user.username;
+            });
+        }
+        
+        function useSampleProfileData() {
+            // Sample data for demo purposes
+            const sampleData = {
+                username: 'johndoe',
+                email: 'john.doe@student.edu',
+                profile: {
+                    fullName: 'John Doe',
+                    department: 'Computer Science',
+                    studentId: 'CS2023-001',
+                    phone: '+1 (555) 123-4567',
+                    dob: 'January 15, 2000',
+                    semester: '4th Semester',
+                    enrollment: 'September 2023',
+                    cgpa: '3.75/4.00',
+                    attendance: '92%'
+                }
+            };
+            
+            updateProfileUI(sampleData);
+        }
+        
+        async function loadCurrentCourses() {
+            try {
+                const courses = await apiService.getCourses();
+                if (courses.success) {
+                    renderCurrentCourses(courses.courses.slice(0, 5)); // Show first 5
+                }
+            } catch (error) {
+                console.error('Failed to load courses:', error);
+                // Use sample courses
+                renderCurrentCourses(sampleCourses.slice(0, 5));
+            }
+        }
+        
+        function renderCurrentCourses(courses) {
+            const tbody = document.getElementById('current-courses');
+            
+            tbody.innerHTML = courses.map(course => `
+                <tr>
+                    <td>${course.code}</td>
+                    <td>${course.title}</td>
+                    <td>${course.instructor}</td>
+                    <td>
+                        ${course.progress >= 90 ? 'A' : 
+                          course.progress >= 80 ? 'B+' : 
+                          course.progress >= 70 ? 'B' : 
+                          course.progress >= 60 ? 'C' : 'N/A'}
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="progress flex-grow-1 me-2" style="height: 6px;">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: ${course.progress}%"></div>
+                            </div>
+                            <small>${course.progress}%</small>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function setupForms() {
+            // Profile settings form
+            const profileForm = document.getElementById('profile-settings-form');
+            if (profileForm) {
+                profileForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const formData = {
+                        profile: {
+                            fullName: `${this[0].value} ${this[1].value}`,
+                            email: this[2].value,
+                            phone: this[3].value,
+                            dob: this[4].value,
+                            department: this[5].value,
+                            bio: this[6].value
+                        }
+                    };
+                    
+                    try {
+                        const result = await apiService.updateUserProfile(formData);
+                        if (result.success) {
+                            studentPortal.showToast('Profile updated successfully!', 'success');
+                            updateProfileUI(result.user);
+                        } else {
+                            studentPortal.showToast(result.message || 'Failed to update profile', 'error');
+                        }
+                    } catch (error) {
+                        studentPortal.showToast('Error updating profile. Please try again.', 'error');
+                    }
+                });
+            }
+            
+            // Password change form
+            const passwordForm = document.getElementById('password-change-form');
+            if (passwordForm) {
+                passwordForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const currentPassword = this[0].value;
+                    const newPassword = this[1].value;
+                    const confirmPassword = this[2].value;
+                    
+                    if (newPassword !== confirmPassword) {
+                        studentPortal.showToast('Passwords do not match', 'error');
+                        return;
+                    }
+                    
+                    if (newPassword.length < 8) {
+                        studentPortal.showToast('Password must be at least 8 characters long', 'error');
+                        return;
+                    }
+                    
+                    try {
+                        // In a real app, this would be an API call
+                        // await apiService.changePassword(currentPassword, newPassword);
+                        
+                        // Simulate API call
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        
+                        studentPortal.showToast('Password changed successfully!', 'success');
+                        this.reset();
+                    } catch (error) {
+                        studentPortal.showToast('Failed to change password. Please try again.', 'error');
+                    }
+                });
+            }
+        }
+        
+        function setupPasswordStrength() {
+            const passwordInput = document.getElementById('new-password');
+            const strengthBar = document.getElementById('password-strength-bar');
+            
+            if (passwordInput && strengthBar) {
+                passwordInput.addEventListener('input', function() {
+                    const password = this.value;
+                    let strength = 0;
+                    
+                    // Length check
+                    if (password.length >= 8) strength += 25;
+                    if (password.length >= 12) strength += 25;
+                    
+                    // Complexity checks
+                    if (/[A-Z]/.test(password)) strength += 25;
+                    if (/[0-9]/.test(password)) strength += 25;
+                    if (/[^A-Za-z0-9]/.test(password)) strength += 25;
+                    
+                    // Cap at 100
+                    strength = Math.min(strength, 100);
+                    
+                    // Update strength bar
+                    strengthBar.style.width = `${strength}%`;
+                    
+                    // Update color
+                    if (strength < 50) {
+                        strengthBar.className = 'password-strength-bar strength-weak';
+                    } else if (strength < 75) {
+                        strengthBar.className = 'password-strength-bar strength-medium';
+                    } else {
+                        strengthBar.className = 'password-strength-bar strength-strong';
+                    }
+                });
+            }
+        }
+        
+        // Profile actions
+        function editProfile() {
+            // Switch to settings tab
+            const settingsTab = new bootstrap.Tab(document.getElementById('settings-tab'));
+            settingsTab.show();
+            
+            // Scroll to profile settings form
+            document.getElementById('profile-settings-form').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+        
+        function changeAvatar() {
+            // Create file input
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            fileInput.style.display = 'none';
+            
+            fileInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const file = this.files[0];
+                    
+                    // Validate file
+                    if (!file.type.startsWith('image/')) {
+                        studentPortal.showToast('Please select an image file', 'error');
+                        return;
+                    }
+                    
+                    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                        studentPortal.showToast('Image must be less than 5MB', 'error');
+                        return;
+                    }
+                    
+                    // Show preview
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const avatar = document.getElementById('profile-avatar');
+                        avatar.src = e.target.result;
+                        
+                        // In a real app, upload to server
+                        // uploadAvatar(file);
+                        
+                        studentPortal.showToast('Avatar updated successfully!', 'success');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            document.body.appendChild(fileInput);
+            fileInput.click();
+            document.body.removeChild(fileInput);
+        }
+        
+        function setTheme(theme) {
+            document.body.className = document.body.className.replace(/theme-\w+/g, '');
+            document.body.classList.add(`theme-${theme}`);
+            
+            // Save preference
+            localStorage.setItem('theme', theme);
+            
+            studentPortal.showToast(`Theme set to ${theme} mode`, 'success');
+        }
+        
+        function exportProfileData() {
+            // In a real app, this would generate and download a file
+            studentPortal.showToast('Preparing your profile data for download...', 'info');
+            
+            setTimeout(() => {
+                // Simulate download
+                const data = {
+                    name: 'John Doe',
+                    email: 'john.doe@student.edu',
+                    courses: sampleCourses.length,
+                    gpa: '3.75',
+                    // ... more data
+                };
+                
+                const dataStr = JSON.stringify(data, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                
+                const exportFileDefaultName = 'student-profile-data.json';
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+                
+                studentPortal.showToast('Profile data downloaded successfully!', 'success');
+            }, 1000);
+        }
+        
+        function exportCourseData() {
+            studentPortal.showToast('Preparing your course history for download...', 'info');
+            
+            setTimeout(() => {
+                // Simulate download
+                const csvContent = "data:text/csv;charset=utf-8," +
+                    "Course Code,Course Name,Instructor,Grade,Status\n" +
+                    sampleCourses.map(course => 
+                        `${course.code},${course.title},${course.instructor},${course.progress >= 90 ? 'A' : 'B'},${course.status}`
+                    ).join("\n");
+                
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", "course-history.csv");
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                studentPortal.showToast('Course history downloaded successfully!', 'success');
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

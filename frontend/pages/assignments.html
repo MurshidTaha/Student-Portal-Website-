@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignments - Student Portal</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="logo">Student Portal</a>
+            <div class="nav-links">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="courses.html">Courses</a>
+                <a href="assignments.html" class="active">Assignments</a>
+                <a href="grades.html">Grades</a>
+                <a href="profile.html">Profile</a>
+                <a href="#" onclick="authService.logout()">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1>My Assignments</h1>
+        
+        <div class="assignment-filters mb-4">
+            <button class="btn filter-btn active" data-filter="all">All</button>
+            <button class="btn filter-btn" data-filter="pending">Pending</button>
+            <button class="btn filter-btn" data-filter="submitted">Submitted</button>
+            <button class="btn filter-btn" data-filter="graded">Graded</button>
+        </div>
+
+        <div id="assignments-list" class="assignments-grid">
+            <!-- Dynamic content -->
+        </div>
+
+        <div id="no-assignments" style="display: none;">
+            <div class="empty-state">
+                <i class="fas fa-file-alt fa-3x"></i>
+                <h3>No Assignments</h3>
+                <p>You don't have any assignments at the moment.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (!authService.isAuthenticated()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            await loadAssignments();
+            setupFilterButtons();
+        });
+
+        async function loadAssignments(filter = 'all') {
+            try {
+                const assignments = await apiService.getAssignments(filter);
+                renderAssignments(assignments);
+            } catch (error) {
+                console.error('Failed to load assignments:', error);
+            }
+        }
+
+        function renderAssignments(assignments) {
+            const container = document.getElementById('assignments-list');
+            const emptyState = document.getElementById('no-assignments');
+            
+            if (!assignments || assignments.length === 0) {
+                container.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            
+            container.innerHTML = assignments.map(assignment => `
+                <div class="assignment-card">
+                    <div class="assignment-header">
+                        <h3>${assignment.title}</h3>
+                        <span class="badge ${assignment.status}">${assignment.status}</span>
+                    </div>
+                    <div class="assignment-body">
+                        <p><strong>Course:</strong> ${assignment.course?.title || 'N/A'}</p>
+                        <p><strong>Due Date:</strong> ${new Date(assignment.dueDate).toLocaleDateString()}</p>
+                        <p><strong>Total Marks:</strong> ${assignment.totalMarks}</p>
+                        ${assignment.marks ? `<p><strong>Your Marks:</strong> ${assignment.marks}/${assignment.totalMarks}</p>` : ''}
+                        <div class="assignment-actions">
+                            ${assignment.status === 'pending' ? 
+                                `<button class="btn btn-primary" onclick="submitAssignment('${assignment._id}')">
+                                    <i class="fas fa-upload"></i> Submit
+                                </button>` : 
+                                `<button class="btn btn-secondary" onclick="viewSubmission('${assignment._id}')">
+                                    <i class="fas fa-eye"></i> View
+                                </button>`
+                            }
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setupFilterButtons() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    loadAssignments(this.dataset.filter);
+                });
+            });
+        }
+
+        function submitAssignment(assignmentId) {
+            window.location.href = `submit-assignment.html?id=${assignmentId}`;
+        }
+
+        function viewSubmission(assignmentId) {
+            // View submission details
+            studentPortal.showToast('Opening submission details...', 'info');
+        }
+    </script>
+</body>
+</html>

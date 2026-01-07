@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Student Portal</title>
+    <link rel="stylesheet" href="../css/auth.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="auth-logo">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h2>Create Account</h2>
+            <p>Join Student Portal today</p>
+        </div>
+        
+        <form class="auth-form" id="registerForm">
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <div class="input-group">
+                    <i class="fas fa-user input-group-icon"></i>
+                    <input type="text" id="fullName" name="fullName" placeholder="John Doe" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <div class="input-group">
+                    <i class="fas fa-envelope input-group-icon"></i>
+                    <input type="email" id="email" name="email" placeholder="student@example.com" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="studentId">Student ID</label>
+                <div class="input-group">
+                    <i class="fas fa-id-card input-group-icon"></i>
+                    <input type="text" id="studentId" name="studentId" placeholder="CS2023-001" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-group">
+                    <i class="fas fa-lock input-group-icon"></i>
+                    <input type="password" id="password" name="password" placeholder="Create a password" required>
+                </div>
+                <div class="password-strength">
+                    <div class="strength-meter">
+                        <div class="strength-meter-fill" id="password-strength"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <div class="input-group">
+                    <i class="fas fa-lock input-group-icon"></i>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                </div>
+            </div>
+            
+            <div class="form-check">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-user-plus"></i> Create Account
+            </button>
+            
+            <div class="auth-footer">
+                <p>Already have an account? <a href="login.html">Sign in</a></p>
+            </div>
+        </form>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

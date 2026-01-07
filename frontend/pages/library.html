@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library - Student Portal</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="logo">Student Portal</a>
+            <div class="nav-links">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="courses.html">Courses</a>
+                <a href="assignments.html">Assignments</a>
+                <a href="grades.html">Grades</a>
+                <a href="library.html" class="active">Library</a>
+                <a href="profile.html">Profile</a>
+                <a href="#" onclick="authService.logout()">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1>Library & Resources</h1>
+        
+        <div class="search-bar mb-4">
+            <input type="text" placeholder="Search resources..." id="resource-search">
+            <button class="btn btn-primary" onclick="searchResources()">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+
+        <div class="resource-categories mb-4">
+            <button class="btn category-btn active" data-category="all">All</button>
+            <button class="btn category-btn" data-category="books">Books</button>
+            <button class="btn category-btn" data-category="notes">Notes</button>
+            <button class="btn category-btn" data-category="papers">Past Papers</button>
+            <button class="btn category-btn" data-category="videos">Videos</button>
+        </div>
+
+        <div class="resources-grid" id="resources-grid">
+            <!-- Resources will be loaded here -->
+        </div>
+
+        <div id="no-resources" style="display: none;">
+            <div class="empty-state">
+                <i class="fas fa-book fa-3x"></i>
+                <h3>No Resources Found</h3>
+                <p>Try a different search or category</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!authService.isAuthenticated()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            loadResources();
+            setupCategoryButtons();
+        });
+
+        async function loadResources(category = 'all', search = '') {
+            try {
+                const resources = await apiService.getResources(category, search);
+                renderResources(resources);
+            } catch (error) {
+                console.error('Failed to load resources:', error);
+            }
+        }
+
+        function renderResources(resources) {
+            const container = document.getElementById('resources-grid');
+            const emptyState = document.getElementById('no-resources');
+            
+            if (!resources || resources.length === 0) {
+                container.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            
+            container.innerHTML = resources.map(resource => `
+                <div class="resource-card">
+                    <div class="resource-icon">
+                        <i class="fas ${getResourceIcon(resource.type)}"></i>
+                    </div>
+                    <div class="resource-info">
+                        <h4>${resource.title}</h4>
+                        <p>${resource.description}</p>
+                        <div class="resource-meta">
+                            <span class="resource-category">${resource.category}</span>
+                            <span class="resource-size">${resource.size}</span>
+                            <span class="resource-date">${new Date(resource.uploadedAt).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                    <div class="resource-actions">
+                        <button class="btn btn-primary" onclick="downloadResource('${resource._id}')">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                        <button class="btn btn-secondary" onclick="previewResource('${resource._id}')">
+                            <i class="fas fa-eye"></i> Preview
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setupCategoryButtons() {
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    loadResources(this.dataset.category);
+                });
+            });
+        }
+
+        function searchResources() {
+            const searchTerm = document.getElementById('resource-search').value;
+            const activeCategory = document.querySelector('.category-btn.active').dataset.category;
+            loadResources(activeCategory, searchTerm);
+        }
+
+        function getResourceIcon(type) {
+            const icons = {
+                'pdf': 'fa-file-pdf',
+                'doc': 'fa-file-word',
+                'video': 'fa-video',
+                'book': 'fa-book',
+                'notes': 'fa-sticky-note'
+            };
+            return icons[type] || 'fa-file';
+        }
+
+        function downloadResource(resourceId) {
+            // Download resource
+            studentPortal.showToast('Downloading resource...', 'info');
+            // In real app: window.location.href = `/api/resources/${resourceId}/download`;
+        }
+
+        function previewResource(resourceId) {
+            // Preview resource
+            studentPortal.showToast('Previewing resource...', 'info');
+        }
+    </script>
+</body>
+</html>

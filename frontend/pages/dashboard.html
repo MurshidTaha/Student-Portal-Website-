@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Student Portal</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .dashboard-welcome {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        
+        .dashboard-stats {
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+        
+        .stat-icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+        
+        .dashboard-section {
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: var(--secondary-color);
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .action-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+            text-decoration: none;
+            color: var(--dark-color);
+            transition: all 0.3s ease;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            color: var(--secondary-color);
+        }
+        
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+        
+        .recent-activities {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            background: #f8f9fa;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-color);
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-text {
+            margin-bottom: 0.25rem;
+            color: var(--dark-color);
+        }
+        
+        .activity-time {
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-top: 1rem;
+        }
+        
+        .calendar-day-header {
+            text-align: center;
+            font-weight: 600;
+            color: var(--dark-color);
+            padding: 0.5rem;
+        }
+        
+        .calendar-day {
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .calendar-day:hover {
+            background: #f8f9fa;
+        }
+        
+        .calendar-day.today {
+            background: var(--secondary-color);
+            color: white;
+        }
+        
+        .calendar-day.empty {
+            background: transparent;
+            cursor: default;
+        }
+        
+        .progress-container {
+            margin-bottom: 1.5rem;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-percentage {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+    </style>
+</head>
+<body class="logged-in">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="../index.html">
+                <img src="../images/logo.png" alt="Student Portal" height="50">
+                <span>Student Portal</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="dashboard.html"><i class="fas fa-tachometer-alt me-1"></i>Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="courses.html"><i class="fas fa-book me-1"></i>Courses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="assignments.html"><i class="fas fa-file-alt me-1"></i>Assignments</a></li>
+                    <li class="nav-item"><a class="nav-link" href="grades.html"><i class="fas fa-chart-line me-1"></i>Grades</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> <span class="user-name">Student</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="authService.logout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container-fluid mt-5 pt-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <aside class="col-lg-3 col-xl-2 d-none d-lg-block sidebar">
+                <div class="sticky-top pt-4">
+                    <div class="card mb-3">
+                        <div class="card-body text-center">
+                            <img src="../images/avatar.jpg" alt="User Avatar" class="rounded-circle mb-3" width="80" height="80">
+                            <h5 class="card-title user-display">John Doe</h5>
+                            <p class="text-muted">Computer Science Student</p>
+                            <p class="small"><i class="fas fa-id-card me-1"></i> CS2023-001</p>
+                        </div>
+                    </div>
+                    
+                    <div class="list-group">
+                        <a href="dashboard.html" class="list-group-item list-group-item-action active">
+                            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                        </a>
+                        <a href="courses.html" class="list-group-item list-group-item-action">
+                            <i class="fas fa-book me-2"></i> My Courses
+                        </a>
+                        <a href="schedule.html" class="list-group-item list-group-item-action">
+                            <i class="fas fa-calendar-alt me-2"></i> Schedule
+                        </a>
+                        <a href="assignments.html" class="list-group-item list-group-item-action">
+                            <i class="fas fa-file-alt me-2"></i> Assignments
+                            <span class="badge bg-danger float-end">3</span>
+                        </a>
+                        <a href="grades.html" class="list-group-item list-group-item-action">
+                            <i class="fas fa-chart-line me-2"></i> Grades
+                        </a>
+                        <a href="messages.html" class="list-group-item list-group-item-action">
+                            <i class="fas fa-envelope me-2"></i> Messages
+                            <span class="badge bg-primary float-end">5</span>
+                        </a>
+                        <a href="resources.html" class="list-group-item list-group-item-action">
+                            <i class="fas fa-folder me-2"></i> Resources
+                        </a>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="col-lg-9 col-xl-10">
+                <div class="container-fluid py-4">
+                    <!-- Welcome Section -->
+                    <div class="dashboard-welcome">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h1>Welcome back, <span class="user-name">Student</span>!</h1>
+                                <p class="lead">Here's what's happening with your courses today.</p>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <div class="btn-group">
+                                    <a href="courses.html" class="btn btn-light">View All Courses</a>
+                                    <a href="assignments.html" class="btn btn-outline-light">Pending Assignments</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Section -->
+                    <div class="dashboard-stats">
+                        <div class="row g-4">
+                            <div class="col-md-3 col-sm-6">
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-book"></i>
+                                    </div>
+                                    <div class="stat-number" id="enrolled-courses">5</div>
+                                    <div class="stat-label">Enrolled Courses</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    <div class="stat-number" id="pending-assignments">3</div>
+                                    <div class="stat-label">Pending Assignments</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <div class="stat-number" id="average-grade">85%</div>
+                                    <div class="stat-label">Average Grade</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </div>
+                                    <div class="stat-number" id="attendance-rate">92%</div>
+                                    <div class="stat-label">Attendance Rate</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Left Column -->
+                        <div class="col-lg-8">
+                            <!-- Quick Actions -->
+                            <div class="dashboard-section">
+                                <h3 class="section-title"><i class="fas fa-bolt"></i> Quick Actions</h3>
+                                <div class="quick-actions">
+                                    <a href="courses.html" class="action-card">
+                                        <div class="action-icon">
+                                            <i class="fas fa-book-open"></i>
+                                        </div>
+                                        <h5>View Courses</h5>
+                                        <p class="small">Access your course materials</p>
+                                    </a>
+                                    <a href="assignments.html" class="action-card">
+                                        <div class="action-icon">
+                                            <i class="fas fa-upload"></i>
+                                        </div>
+                                        <h5>Submit Assignment</h5>
+                                        <p class="small">Upload your completed work</p>
+                                    </a>
+                                    <a href="messages.html" class="action-card">
+                                        <div class="action-icon">
+                                            <i class="fas fa-comments"></i>
+                                        </div>
+                                        <h5>Messages</h5>
+                                        <p class="small">Check your messages</p>
+                                    </a>
+                                    <a href="resources.html" class="action-card">
+                                        <div class="action-icon">
+                                            <i class="fas fa-download"></i>
+                                        </div>
+                                        <h5>Resources</h5>
+                                        <p class="small">Download study materials</p>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Course Progress -->
+                            <div class="dashboard-section">
+                                <h3 class="section-title"><i class="fas fa-chart-line"></i> Course Progress</h3>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="progress-container">
+                                            <div class="progress-label">
+                                                <span>Web Development</span>
+                                                <span class="progress-percentage">78%</span>
+                                            </div>
+                                            <div class="progress" style="height: 10px;">
+                                                <div class="progress-bar bg-success" role="progressbar" style="width: 78%" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="progress-container">
+                                            <div class="progress-label">
+                                                <span>Database Systems</span>
+                                                <span class="progress-percentage">65%</span>
+                                            </div>
+                                            <div class="progress" style="height: 10px;">
+                                                <div class="progress-bar bg-info" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="progress-container">
+                                            <div class="progress-label">
+                                                <span>Data Structures</span>
+                                                <span class="progress-percentage">92%</span>
+                                            </div>
+                                            <div class="progress" style="height: 10px;">
+                                                <div class="progress-bar bg-warning" role="progressbar" style="width: 92%" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="progress-container">
+                                            <div class="progress-label">
+                                                <span>Software Engineering</span>
+                                                <span class="progress-percentage">45%</span>
+                                            </div>
+                                            <div class="progress" style="height: 10px;">
+                                                <div class="progress-bar bg-primary" role="progressbar" style="width: 45%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column -->
+                        <div class="col-lg-4">
+                            <!-- Upcoming Deadlines -->
+                            <div class="dashboard-section">
+                                <h3 class="section-title"><i class="fas fa-calendar-alt"></i> Upcoming Deadlines</h3>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="list-group list-group-flush">
+                                            <div class="list-group-item">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <h6 class="mb-1">Web Development Project</h6>
+                                                    <small class="text-danger">Tomorrow</small>
+                                                </div>
+                                                <p class="mb-1 small">Submit final project documentation</p>
+                                                <small>CSE-401</small>
+                                            </div>
+                                            <div class="list-group-item">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <h6 class="mb-1">Database Assignment 3</h6>
+                                                    <small class="text-warning">2 days</small>
+                                                </div>
+                                                <p class="mb-1 small">SQL queries and normalization</p>
+                                                <small>CSE-302</small>
+                                            </div>
+                                            <div class="list-group-item">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <h6 class="mb-1">Software Engineering Quiz</h6>
+                                                    <small class="text-info">5 days</small>
+                                                </div>
+                                                <p class="mb-1 small">Chapter 5-7 online quiz</p>
+                                                <small>CSE-405</small>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3 text-center">
+                                            <a href="assignments.html" class="btn btn-outline-primary btn-sm">View All Assignments</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Recent Activities -->
+                            <div class="dashboard-section">
+                                <h3 class="section-title"><i class="fas fa-history"></i> Recent Activities</h3>
+                                <div class="recent-activities">
+                                    <div class="activity-item">
+                                        <div class="activity-icon">
+                                            <i class="fas fa-file-alt"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <p class="activity-text">Submitted Web Development Assignment 2</p>
+                                            <small class="activity-time">2 hours ago</small>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon">
+                                            <i class="fas fa-comment"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <p class="activity-text">Posted a question in Database Systems forum</p>
+                                            <small class="activity-time">Yesterday</small>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon">
+                                            <i class="fas fa-download"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <p class="activity-text">Downloaded Data Structures lecture notes</p>
+                                            <small class="activity-time">2 days ago</small>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon">
+                                            <i class="fas fa-chart-line"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <p class="activity-text">Received grade for Software Engineering midterm: 88%</p>
+                                            <small class="activity-time">3 days ago</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Calendar Widget -->
+                            <div class="dashboard-section">
+                                <h3 class="section-title"><i class="fas fa-calendar"></i> Calendar</h3>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="dashboard-calendar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h4>Student Portal</h4>
+                    <p>Your academic companion for success.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="courses.html">Courses</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="library.html">Library</a></li>
+                        <li><a href="timetable.html">Timetable</a></li>
+                        <li><a href="announcements.html">Announcements</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <h5>Need Help?</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-envelope me-2"></i> support@studentportal.edu</li>
+                        <li><i class="fas fa-phone me-2"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-clock me-2"></i> Mon-Fri: 9AM-5PM</li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p>&copy; 2024 Student Portal. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        // Dashboard specific JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load dashboard data
+            loadDashboardData();
+            
+            // Update statistics
+            updateDashboardStats();
+            
+            // Set up event listeners for dashboard actions
+            setupDashboardEvents();
+        });
+        
+        async function loadDashboardData() {
+            try {
+                // Load courses
+                const courses = await apiService.getCourses();
+                if (courses.success) {
+                    document.getElementById('enrolled-courses').textContent = courses.courses.length;
+                }
+                
+                // Load assignments
+                const assignments = await apiService.getAssignments({ status: 'pending' });
+                if (assignments.success) {
+                    document.getElementById('pending-assignments').textContent = assignments.assignments.length;
+                }
+                
+            } catch (error) {
+                console.error('Failed to load dashboard data:', error);
+            }
+        }
+        
+        function updateDashboardStats() {
+            // Update time-based stats
+            const now = new Date();
+            const hour = now.getHours();
+            
+            // Update welcome message based on time
+            const welcomeMessage = document.querySelector('.dashboard-welcome h1');
+            if (welcomeMessage) {
+                let greeting = 'Good ';
+                if (hour < 12) greeting += 'Morning';
+                else if (hour < 18) greeting += 'Afternoon';
+                else greeting += 'Evening';
+                
+                const userName = document.querySelector('.user-name').textContent;
+                welcomeMessage.innerHTML = `${greeting}, <span class="user-name">${userName}</span>!`;
+            }
+        }
+        
+        function setupDashboardEvents() {
+            // Quick action card click handlers
+            document.querySelectorAll('.action-card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const action = this.querySelector('h5').textContent;
+                    console.log(`Action clicked: ${action}`);
+                    // In a real app, this would trigger the specific action
+                });
+            });
+            
+            // Calendar day click handlers
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('calendar-day') && 
+                    !e.target.classList.contains('empty')) {
+                    const day = e.target.textContent;
+                    const date = new Date();
+                    date.setDate(parseInt(day));
+                    showDayEvents(date);
+                }
+            });
+        }
+        
+        function showDayEvents(date) {
+            // Show events for the selected day
+            const events = [
+                { time: '10:00 AM', title: 'Web Development Class', location: 'Room 301' },
+                { time: '2:00 PM', title: 'Study Group Meeting', location: 'Library' }
+            ];
+            
+            const modalContent = `
+                <div class="modal-header">
+                    <h5 class="modal-title">Events for ${date.toLocaleDateString()}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    ${events.length > 0 ? events.map(event => `
+                        <div class="event-item mb-3">
+                            <div class="d-flex">
+                                <div class="event-time bg-primary text-white p-2 rounded text-center me-3">
+                                    <small>${event.time}</small>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">${event.title}</h6>
+                                    <small class="text-muted">${event.location}</small>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('') : '<p class="text-muted">No events scheduled for this day.</p>'}
+                </div>
+            `;
+            
+            // Create and show modal
+            showModal('Day Events', modalContent);
+        }
+        
+        function showModal(title, content) {
+            // Remove existing modal
+            const existingModal = document.querySelector('.custom-modal');
+            if (existingModal) existingModal.remove();
+            
+            // Create modal
+            const modal = document.createElement('div');
+            modal.className = 'custom-modal modal fade show';
+            modal.style.display = 'block';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+            modal.innerHTML = `
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        ${content}
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Add event listener to close modal
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal || e.target.classList.contains('btn-close') || 
+                    e.target.classList.contains('btn-secondary')) {
+                    modal.remove();
+                }
+            });
+        }
+    </script>
+</body>
+</html>
